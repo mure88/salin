@@ -14,6 +14,8 @@ const updateTaskSchema = z.object({
   assignedToId: z.string().nullable().optional(),
   isRecurring: z.boolean().optional(),
   recurringPattern: z.string().nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
+  points: z.number().int().min(0).max(1000).optional(),
 });
 
 // GET /api/tasks/[id] - Get a single task
@@ -109,6 +111,8 @@ export async function PATCH(
     if (data.assignedToId !== undefined) updateData.assignedToId = data.assignedToId;
     if (data.isRecurring !== undefined) updateData.isRecurring = data.isRecurring;
     if (data.recurringPattern !== undefined) updateData.recurringPattern = data.recurringPattern;
+    if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
+    if (data.points !== undefined) updateData.points = data.points;
 
     // Update task
     const task = await prisma.task.update({

@@ -261,11 +261,11 @@ export default function CreateTaskDialog({ onTaskCreated, categories = [], users
             </div>
             
             {imagePreview && (
-              <div className="relative mt-2">
+              <div className="relative mt-2 mb-4">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="w-full h-48 object-cover rounded-lg border"
+                  className="w-full h-40 sm:h-48 object-cover rounded-lg border"
                 />
                 <Button
                   type="button"
@@ -281,16 +281,16 @@ export default function CreateTaskDialog({ onTaskCreated, categories = [], users
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md mb-4">
               {error}
             </div>
           )}
 
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 border-t">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading} className="w-full sm:w-auto">
               {t('cancel')}
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading ? t('creating') : t('createTask')}
             </Button>
           </div>

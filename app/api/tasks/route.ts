@@ -13,6 +13,8 @@ const createTaskSchema = z.object({
   assignedToId: z.string().optional(),
   isRecurring: z.boolean().optional(),
   recurringPattern: z.string().optional(),
+  imageUrl: z.string().optional(),
+  points: z.number().int().min(0).max(1000).optional(),
 });
 
 // GET /api/tasks - List all tasks with optional filters
@@ -95,6 +97,8 @@ export async function POST(request: NextRequest) {
         assignedToId: data.assignedToId,
         isRecurring: data.isRecurring || false,
         recurringPattern: data.recurringPattern,
+        imageUrl: data.imageUrl,
+        points: data.points || 0,
         createdById: session.userId,
         status: 'PENDING',
       },
