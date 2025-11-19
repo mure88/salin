@@ -95,7 +95,7 @@ export const translations = {
   },
   fi: {
     // Navigation
-    dashboard: 'Kojelauta',
+    dashboard: 'Koti',
     tasks: 'Tehtävät',
     users: 'Käyttäjät',
     admin: 'Ylläpito',

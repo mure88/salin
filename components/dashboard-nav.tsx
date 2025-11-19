@@ -23,45 +23,54 @@ export default function DashboardNav({ session }: DashboardNavProps) {
   };
 
   return (
-    <nav className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+    <nav className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="text-xl font-bold text-slate-900 dark:text-white">
-              Salin Family
+          <div className="flex items-center gap-4 md:gap-8">
+            <Link href="/dashboard" className="flex items-center gap-2 group">
+              <div className="bg-white rounded-lg p-2 shadow-md group-hover:shadow-xl transition-all">
+                <Home className="w-5 h-5 text-indigo-600" />
+              </div>
+              <span className="text-lg md:text-xl font-bold text-white hidden sm:inline">Salin Family</span>
             </Link>
-            <div className="hidden md:flex items-center gap-4">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                <Home className="w-4 h-4" />
-                {t('dashboard')}
+            <div className="flex items-center gap-2">
+              <Link href="/dashboard">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 text-white hover:bg-white/20 hover:text-white transition-all"
+                >
+                  <Home className="w-4 h-4" />
+                  <span className="hidden md:inline">{t('dashboard')}</span>
+                </Button>
               </Link>
-              <Link
-                href="/dashboard/tasks"
-                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              >
-                <ListTodo className="w-4 h-4" />
-                {t('tasks')}
+              <Link href="/dashboard/tasks">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 text-white hover:bg-white/20 hover:text-white transition-all"
+                >
+                  <ListTodo className="w-4 h-4" />
+                  <span className="hidden md:inline">{t('tasks')}</span>
+                </Button>
               </Link>
               {session.role === 'ADMIN' && (
-                <Link
-                  href="/dashboard/admin"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-                >
-                  <Users className="w-4 h-4" />
-                  {t('users')}
+                <Link href="/dashboard/admin">
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-2 text-white hover:bg-white/20 hover:text-white transition-all"
+                  >
+                    <Users className="w-4 h-4" />
+                    <span className="hidden md:inline">{t('users')}</span>
+                  </Button>
                 </Link>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <LanguageSwitcher />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
+            <span className="text-sm text-white font-medium hidden md:inline">
               {session.username}
               {session.role === 'ADMIN' && (
-                <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                <span className="ml-2 text-xs bg-white/20 text-white px-2 py-1 rounded">
                   {t('admin')}
                 </span>
               )}
@@ -70,7 +79,7 @@ export default function DashboardNav({ session }: DashboardNavProps) {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-white hover:bg-white/20 hover:text-white"
             >
               <LogOut className="w-4 h-4" />
               {t('logout')}

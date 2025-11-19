@@ -41,8 +41,28 @@ export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: Tas
     onStatusChange(task.id, nextStatus);
   };
 
+  // Priority-based styling
+  const getPriorityStyle = () => {
+    if (isOverdue) {
+      return 'border-l-4 border-l-red-500 bg-gradient-to-br from-red-50 to-white dark:from-red-950/30 dark:to-gray-900';
+    }
+    
+    switch (task.priority) {
+      case 'URGENT':
+        return 'border-l-4 border-l-rose-500 bg-gradient-to-br from-rose-50 to-white dark:from-rose-950/30 dark:to-gray-900';
+      case 'HIGH':
+        return 'border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50 to-white dark:from-orange-950/30 dark:to-gray-900';
+      case 'MEDIUM':
+        return 'border-l-4 border-l-amber-500 bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-gray-900';
+      case 'LOW':
+        return 'border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900';
+      default:
+        return 'border-l-4 border-l-slate-300 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-gray-900';
+    }
+  };
+
   return (
-    <Card className={`transition-all hover:shadow-lg hover:scale-[1.02] bg-gradient-to-br from-white to-slate-50/50 dark:from-gray-900 dark:to-gray-800/50 ${isOverdue ? 'border-l-4 border-l-red-400 from-red-50/50 dark:from-red-950/20' : 'border-l-4 border-l-indigo-200 dark:border-l-indigo-800'}`}>
+    <Card className={`transition-all hover:shadow-lg hover:scale-[1.02] ${getPriorityStyle()}`}>
       <CardHeader className="pb-3 px-3 md:px-6 pt-4 md:pt-6">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
