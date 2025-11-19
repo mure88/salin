@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TaskWithRelations } from '@/lib/types';
 import { useLanguage } from '@/lib/language-context';
+import { translateCategory } from '@/lib/translations';
 
 interface EditTaskDialogProps {
   task: TaskWithRelations | null;
@@ -26,7 +27,7 @@ export default function EditTaskDialog({
   categories = [], 
   users = [] 
 }: EditTaskDialogProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -136,7 +137,7 @@ export default function EditTaskDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat} value={cat}>{translateCategory(cat, language)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

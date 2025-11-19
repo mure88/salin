@@ -42,6 +42,10 @@ export const translations = {
     showing: 'Showing',
     of: 'of',
     noTasksFound: 'No tasks found',
+    myTasks: 'My Tasks',
+    assignedToMe: 'Tasks assigned to me',
+    allTasks: 'All Tasks',
+    allFamilyTasks: 'All family tasks',
     
     // Task Card
     due: 'Due',
@@ -132,6 +136,10 @@ export const translations = {
     showing: 'Näytetään',
     of: '/',
     noTasksFound: 'Tehtäviä ei löytynyt',
+    myTasks: 'Omat tehtävät',
+    assignedToMe: 'Minulle vastuutetut tehtävät',
+    allTasks: 'Kaikki tehtävät',
+    allFamilyTasks: 'Kaikki perheen tehtävät',
     
     // Task Card
     due: 'Eräpäivä',
@@ -183,3 +191,52 @@ export const translations = {
 
 export type Language = 'en' | 'fi';
 export type TranslationKey = keyof typeof translations.en;
+
+// Helper function to translate category names
+export function translateCategory(categoryName: string, language: Language): string {
+  const categoryMap: Record<string, TranslationKey> = {
+    'School': 'school',
+    'Koulu': 'school',
+    'Work': 'work',
+    'Työ': 'work',
+    'Hobbies': 'hobbies',
+    'Harrastukset': 'hobbies',
+    'Home': 'home',
+    'Koti': 'home',
+    'Health': 'health',
+    'Terveys': 'health',
+    'Shopping': 'shopping',
+    'Ostokset': 'shopping',
+    'Other': 'other',
+    'Muu': 'other',
+  };
+  
+  const key = categoryMap[categoryName];
+  return key ? translations[language][key] : categoryName;
+}
+
+// Helper function to translate status
+export function translateStatus(status: string, language: Language): string {
+  const statusMap: Record<string, TranslationKey> = {
+    'PENDING': 'pending',
+    'IN_PROGRESS': 'inProgress',
+    'COMPLETED': 'completed',
+    'CANCELLED': 'cancelled',
+  };
+  
+  const key = statusMap[status];
+  return key ? translations[language][key] : status;
+}
+
+// Helper function to translate priority
+export function translatePriority(priority: string, language: Language): string {
+  const priorityMap: Record<string, TranslationKey> = {
+    'LOW': 'low',
+    'MEDIUM': 'medium',
+    'HIGH': 'high',
+    'URGENT': 'urgent',
+  };
+  
+  const key = priorityMap[priority];
+  return key ? translations[language][key] : priority;
+}

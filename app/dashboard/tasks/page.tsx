@@ -6,6 +6,7 @@ import TaskList from '@/components/task-list';
 import CreateTaskDialog from '@/components/create-task-dialog';
 import EditTaskDialog from '@/components/edit-task-dialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { ListTodo } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
@@ -14,10 +15,12 @@ export default function TasksPage() {
   const [tasks, setTasks] = useState<TaskWithRelations[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [users, setUsers] = useState<Array<{ id: string; username: string; displayName?: string | null }>>([]);
+  const [currentUser, setCurrentUser] = useState<{ id: string; username: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingTask, setEditingTask] = useState<TaskWithRelations | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'my' | 'all'>('my');
 
   const fetchTasks = async () => {
     try {
@@ -62,10 +65,23 @@ export default function TasksPage() {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch('/api/auth/session');
+      const data = await response.json();
+      if (response.ok && data.user) {
+        setCurrentUser(data.user);
+      }
+    } catch (err) {
+      console.error('Failed to load current user:', err);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
     fetchCategories();
     fetchUsers();
+    fetchCurrentUser();
   }, []);
 
   const handleStatusChange = async (taskId: string, newStatus: string) => {
@@ -126,12 +142,17 @@ export default function TasksPage() {
     );
   }
 
+  // Filter tasks based on view mode
+  const filteredTasks = viewMode === 'my' && currentUser
+    ? tasks.filter(task => task.assignedToId === currentUser.id)
+    : tasks;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6 px-4 md:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('tasks')}</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{t('tasks')}</h1>
+          <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mt-1 md:mt-2">
             {t('manageTasks')}
           </p>
         </div>
@@ -142,7 +163,25 @@ export default function TasksPage() {
         />
       </div>
 
-      {tasks.length === 0 ? (
+      {/* Tab buttons */}
+      <div className="flex gap-2 border-b-2 border-indigo-100 dark:border-indigo-900 overflow-x-auto">
+        <Button
+          variant={viewMode === 'my' ? 'default' : 'ghost'}
+          onClick={() => setViewMode('my')}
+          className={`rounded-b-none whitespace-nowrap transition-all ${viewMode === 'my' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600' : 'hover:bg-indigo-50 dark:hover:bg-indigo-950'}`}
+        >
+          {t('myTasks')}
+        </Button>
+        <Button
+          variant={viewMode === 'all' ? 'default' : 'ghost'}
+          onClick={() => setViewMode('all')}
+          className={`rounded-b-none whitespace-nowrap transition-all ${viewMode === 'all' ? 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600' : 'hover:bg-indigo-50 dark:hover:bg-indigo-950'}`}
+        >
+          {t('allTasks')}
+        </Button>
+      </div>
+
+      {filteredTasks.length === 0 ? (
         <Card>
           <CardHeader>
             <CardTitle>{t('noTasksYet')}</CardTitle>
@@ -158,7 +197,7 @@ export default function TasksPage() {
       ) : (
         <>
           <TaskList
-            tasks={tasks}
+            tasks={filteredTasks}
             onStatusChange={handleStatusChange}
             onEdit={handleEdit}
             onDelete={handleDelete}

@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, User, CheckCircle2, Circle, Clock, Trash2, Edit } from 'lucide-react';
 import { format } from 'date-fns';
+import { useLanguage } from '@/lib/language-context';
+import { translateCategory, translateStatus, translatePriority } from '@/lib/translations';
 
 interface TaskCardProps {
   task: TaskWithRelations;
@@ -29,6 +31,7 @@ const statusColors = {
 };
 
 export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: TaskCardProps) {
+  const { language } = useLanguage();
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'COMPLETED';
 
   const toggleStatus = () => {
@@ -39,16 +42,16 @@ export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: Tas
   };
 
   return (
-    <Card className={`transition-all hover:shadow-md ${isOverdue ? 'border-red-300 dark:border-red-700' : ''}`}>
-      <CardHeader className="pb-3">
+    <Card className={`transition-all hover:shadow-lg hover:scale-[1.02] bg-gradient-to-br from-white to-slate-50/50 dark:from-gray-900 dark:to-gray-800/50 ${isOverdue ? 'border-l-4 border-l-red-400 from-red-50/50 dark:from-red-950/20' : 'border-l-4 border-l-indigo-200 dark:border-l-indigo-800'}`}>
+      <CardHeader className="pb-3 px-3 md:px-6 pt-4 md:pt-6">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleStatus}
-                className="h-6 w-6 p-0"
+                className="h-6 w-6 p-0 flex-shrink-0"
               >
                 {task.status === 'COMPLETED' ? (
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -56,17 +59,17 @@ export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: Tas
                   <Circle className="h-5 w-5 text-gray-400" />
                 )}
               </Button>
-              <CardTitle className={`text-lg ${task.status === 'COMPLETED' ? 'line-through text-gray-500' : ''}`}>
+              <CardTitle className={`text-base md:text-lg truncate ${task.status === 'COMPLETED' ? 'line-through text-gray-500' : ''}`}>
                 {task.title}
               </CardTitle>
             </div>
             {task.description && (
-              <CardDescription className="text-sm">
+              <CardDescription className="text-xs md:text-sm line-clamp-2">
                 {task.description}
               </CardDescription>
             )}
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-shrink-0">
             {onEdit && (
               <Button
                 variant="ghost"
@@ -90,33 +93,35 @@ export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: Tas
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-2">
-          <Badge className={priorityColors[task.priority]}>
-            {task.priority}
+      <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
+        <div className="flex flex-wrap gap-1.5 md:gap-2">
+          <Badge className={`text-xs ${priorityColors[task.priority]}`}>
+            {translatePriority(task.priority, language)}
           </Badge>
-          <Badge className={statusColors[task.status]}>
-            {task.status.replace('_', ' ')}
+          <Badge className={`text-xs ${statusColors[task.status]}`}>
+            {translateStatus(task.status, language)}
           </Badge>
-          <Badge variant="outline">
-            {task.category}
+          <Badge variant="outline" className="text-xs">
+            {translateCategory(task.category, language)}
           </Badge>
           {task.dueDate && (
-            <Badge variant="outline" className={isOverdue ? 'border-red-500 text-red-600' : ''}>
+            <Badge variant="outline" className={`text-xs ${isOverdue ? 'border-red-500 text-red-600' : ''}`}>
               <Calendar className="h-3 w-3 mr-1" />
-              {format(new Date(task.dueDate), 'MMM d, yyyy')}
+              <span className="hidden sm:inline">{format(new Date(task.dueDate), 'MMM d, yyyy')}</span>
+              <span className="sm:hidden">{format(new Date(task.dueDate), 'MMM d')}</span>
             </Badge>
           )}
           {task.assignedTo && (
-            <Badge variant="outline">
+            <Badge variant="outline" className="text-xs">
               <User className="h-3 w-3 mr-1" />
-              {task.assignedTo.displayName || task.assignedTo.username}
+              <span className="truncate max-w-[100px]">{task.assignedTo.displayName || task.assignedTo.username}</span>
             </Badge>
           )}
           {task.isRecurring && (
-            <Badge variant="outline">
+            <Badge variant="outline" className="text-xs">
               <Clock className="h-3 w-3 mr-1" />
-              Recurring
+              <span className="hidden sm:inline">Recurring</span>
+              <span className="sm:hidden">↻</span>
             </Badge>
           )}
         </div>

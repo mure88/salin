@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { translateCategory } from '@/lib/translations';
 
 interface CreateTaskDialogProps {
   onTaskCreated?: () => void;
@@ -16,7 +17,7 @@ interface CreateTaskDialogProps {
 }
 
 export default function CreateTaskDialog({ onTaskCreated, categories = [], users = [] }: CreateTaskDialogProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -78,7 +79,7 @@ export default function CreateTaskDialog({ onTaskCreated, categories = [], users
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all">
           <Plus className="h-4 w-4 mr-2" />
           {t('newTask')}
         </Button>
@@ -129,7 +130,7 @@ export default function CreateTaskDialog({ onTaskCreated, categories = [], users
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat} value={cat}>{translateCategory(cat, language)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
