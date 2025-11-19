@@ -95,7 +95,7 @@ export default function TemplatesDialog({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          assignedToId: assignedToId || undefined,
+          assignedToId: assignedToId && assignedToId !== 'unassigned' ? assignedToId : undefined,
           dueDate: dueDate || undefined,
         }),
       });
@@ -249,10 +249,10 @@ export default function TemplatesDialog({
                     </Label>
                     <Select value={assignedToId} onValueChange={setAssignedToId}>
                       <SelectTrigger>
-                        <SelectValue placeholder={language === 'fi' ? 'Valitse käyttäjä' : 'Select User'} />
+                        <SelectValue placeholder={language === 'fi' ? 'Valitse käyttäjä (valinnainen)' : 'Select User (optional)'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{language === 'fi' ? 'Ei määritetty' : 'Unassigned'}</SelectItem>
+                        <SelectItem value="unassigned">{language === 'fi' ? 'Ei määritetty' : 'Unassigned'}</SelectItem>
                         {users.map((user) => (
                           <SelectItem key={user.id} value={user.id}>
                             {user.displayName || user.username}
