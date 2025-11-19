@@ -1,0 +1,83 @@
+// Salin Family Task Manager - PostgreSQL Database Schema
+// Use this for Netlify/Supabase deployment
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(MEMBER)
+  displayName  String?  @map("display_name")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  createdTasks Task[]   @relation("TaskCreator")
+  assignedTasks Task[]  @relation("TaskAssignee")
+
+  @@map("users")
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  category    String
+  priority    Priority   @default(MEDIUM)
+  status      TaskStatus @default(PENDING)
+  dueDate     DateTime?  @map("due_date")
+  isRecurring Boolean    @default(false) @map("is_recurring")
+  recurringPattern String? @map("recurring_pattern")
+  
+  createdById String     @map("created_by_id")
+  createdBy   User       @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  
+  assignedToId String?   @map("assigned_to_id")
+  assignedTo   User?     @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  completedAt DateTime?  @map("completed_at")
+
+  @@index([createdById])
+  @@index([assignedToId])
+  @@index([dueDate])
+  @@index([status])
+  @@map("tasks")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  color     String   @default("#6366f1")
+  icon      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}

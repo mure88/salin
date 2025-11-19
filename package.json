@@ -4,24 +4,59 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "hash-password": "tsx scripts/hash-password.ts",
+    "deploy": "npm run build && node deploy.js",
+    "deploy:netlify": "node scripts/deploy-netlify.js"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^6.19.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "jose": "^6.1.2",
+    "lucide-react": "^0.554.0",
     "next": "16.0.3",
+    "next-intl": "^4.5.5",
+    "prisma": "^6.19.0",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-day-picker": "^9.11.1",
+    "react-dom": "19.2.0",
+    "react-hook-form": "^7.66.1",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.14.7",
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "node-ssh": "^13.2.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
+    "tw-animate-css": "^1.4.0",
     "typescript": "^5"
   }
 }

@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Salin Family Task Manager
 
-## Getting Started
+A private family task and reminder management app built with Next.js, TypeScript, and MySQL.
 
-First, run the development server:
+## Features
+
+- 🔐 Secure authentication (username/password only)
+- 👨‍👩‍👧‍👦 Family-focused task management
+- 📅 Tasks with categories, priorities, and due dates
+- 🔄 Recurring reminders
+- 👑 Admin-only user management
+- 🎨 Modern UI with Tailwind CSS and shadcn/ui
+- 🌙 Dark mode support
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS 4, shadcn/ui
+- **Database**: MySQL with Prisma ORM
+- **Authentication**: JWT with httpOnly cookies
+- **Icons**: Lucide React
+
+## Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Copy `.env.example` to `.env` and update with your MySQL credentials:
+
+```env
+DATABASE_URL="mysql://username:password@localhost:3306/salin_db"
+JWT_SECRET="your-random-secret-key-here"
+NEXT_PUBLIC_APP_NAME="Salin Family"
+NODE_ENV="development"
+```
+
+### 3. Set Up Database
+
+Create a MySQL database and run Prisma migrations:
+
+```bash
+# Generate Prisma Client
+npx prisma generate
+
+# Create database tables
+npx prisma db push
+
+# Or use migrations (recommended for production)
+npx prisma migrate dev --name init
+```
+
+### 4. Create Admin User
+
+You'll need to create the first admin user manually. Use the Prisma Studio or run a script:
+
+```bash
+npx prisma studio
+```
+
+Or create a seed script to add your first admin user.
+
+### 5. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) - you'll be redirected to the login page.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Users**: Username, password (hashed), role (ADMIN/MEMBER)
+- **Tasks**: Title, description, category, priority, status, due date, recurring pattern
+- **Categories**: Name, color, icon
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+This app is designed to be deployed to cPanel hosting:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Build the application: `npm run build`
+2. Upload to your server (similar to kohtaanto deployment)
+3. Set up MySQL database on cPanel
+4. Configure environment variables
+5. Run migrations on production database
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Admin Features
 
-## Deploy on Vercel
+Only users with ADMIN role can:
+- Create new users
+- Delete users
+- Manage all tasks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Security
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Passwords are hashed with bcrypt
+- Sessions use JWT with httpOnly cookies
+- No email or personal data required
+- Admin-only user registration
