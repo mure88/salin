@@ -5,13 +5,14 @@ import { TaskWithRelations } from '@/lib/types';
 import TaskList from '@/components/task-list';
 import CreateTaskDialog from '@/components/create-task-dialog';
 import EditTaskDialog from '@/components/edit-task-dialog';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import TemplatesDialog from '@/components/templates-dialog';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListTodo } from 'lucide-react';
+import { ListTodo, BookTemplate } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function TasksPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [tasks, setTasks] = useState<TaskWithRelations[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [users, setUsers] = useState<Array<{ id: string; username: string; displayName?: string | null }>>([]);
@@ -20,6 +21,7 @@ export default function TasksPage() {
   const [error, setError] = useState('');
   const [editingTask, setEditingTask] = useState<TaskWithRelations | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [templatesDialogOpen, setTemplatesDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'my' | 'all'>('my');
 
   const fetchTasks = async () => {
@@ -156,11 +158,21 @@ export default function TasksPage() {
             {t('manageTasks')}
           </p>
         </div>
-        <CreateTaskDialog
-          onTaskCreated={fetchTasks}
-          categories={categories}
-          users={users}
-        />
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setTemplatesDialogOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <BookTemplate className="h-4 w-4" />
+            <span className="hidden sm:inline">{language === 'fi' ? 'Mallit' : 'Templates'}</span>
+          </Button>
+          <CreateTaskDialog
+            onTaskCreated={fetchTasks}
+            categories={categories}
+            users={users}
+          />
+        </div>
       </div>
 
       {/* Tab buttons */}
@@ -209,6 +221,12 @@ export default function TasksPage() {
             onTaskUpdated={fetchTasks}
             categories={categories}
             users={users}
+          />
+          <TemplatesDialog
+            open={templatesDialogOpen}
+            onOpenChange={setTemplatesDialogOpen}
+            users={users}
+            onTemplateUsed={fetchTasks}
           />
         </>
       )}
