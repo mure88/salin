@@ -19,6 +19,9 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  // Gamification
+  totalPoints  Int      @default(0) @map("total_points")
+  
   createdTasks Task[]   @relation("TaskCreator")
   assignedTasks Task[]  @relation("TaskAssignee")
 
@@ -33,8 +36,28 @@ model Task {
   priority    Priority   @default(MEDIUM)
   status      TaskStatus @default(PENDING)
   dueDate     DateTime?  @map("due_date")
+  
+  // Recurring tasks
   isRecurring Boolean    @default(false) @map("is_recurring")
-  recurringPattern String? @map("recurring_pattern")
+  recurringPattern String? @map("recurring_pattern") // daily, weekly, monthly, custom
+  recurringDays String?   @map("recurring_days") // JSON array of days for weekly
+  recurringEndDate DateTime? @map("recurring_end_date")
+  parentTaskId String?   @map("parent_task_id") // For recurring task instances
+  
+  // Gamification
+  points      Int        @default(0)
+  
+  // Media
+  imageUrl    String?    @map("image_url")
+  
+  // Dependencies
+  dependsOnId String?    @map("depends_on_id")
+  dependsOn   Task?      @relation("TaskDependency", fields: [dependsOnId], references: [id], onDelete: SetNull)
+  blockedTasks Task[]    @relation("TaskDependency")
+  
+  // Template
+  templateId  String?    @map("template_id")
+  template    Template?  @relation(fields: [templateId], references: [id], onDelete: SetNull)
   
   createdById String     @map("created_by_id")
   createdBy   User       @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Cascade)
@@ -61,6 +84,45 @@ model Category {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("categories")
+}
+
+model Template {
+  id          String   @id @default(uuid())
+  name        String
+  nameFi      String?  @map("name_fi")
+  description String?
+  descriptionFi String? @map("description_fi")
+  category    String
+  icon        String?
+  isSystem    Boolean  @default(false) @map("is_system")
+  
+  tasks       Task[]
+  templateTasks TemplateTask[]
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("templates")
+}
+
+model TemplateTask {
+  id          String   @id @default(uuid())
+  templateId  String   @map("template_id")
+  template    Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  
+  title       String
+  titleFi     String?  @map("title_fi")
+  description String?
+  descriptionFi String? @map("description_fi")
+  category    String
+  priority    Priority @default(MEDIUM)
+  points      Int      @default(0)
+  order       Int      @default(0)
+  dependsOnOrder Int?   @map("depends_on_order")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("template_tasks")
 }
 
 enum Role {

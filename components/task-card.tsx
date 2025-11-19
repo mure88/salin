@@ -88,6 +88,15 @@ export default function TaskCard({ task, onStatusChange, onEdit, onDelete }: Tas
                 {task.description}
               </CardDescription>
             )}
+            {task.imageUrl && (
+              <div className="mt-2">
+                <img
+                  src={task.imageUrl}
+                  alt={task.title}
+                  className="w-full h-32 md:h-40 object-cover rounded-md border"
+                />
+              </div>
+            )}
           </div>
           <div className="flex gap-1 flex-shrink-0">
             {onEdit && (
