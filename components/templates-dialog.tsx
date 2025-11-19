@@ -48,7 +48,7 @@ interface Template {
 interface TemplatesDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  users: Array<{ id: string; username: string; displayName: string | null }>;
+  users: Array<{ id: string; username: string; displayName?: string | null }>;
   onTemplateUsed: () => void;
 }
 
@@ -249,10 +249,10 @@ export default function TemplatesDialog({
                     </Label>
                     <Select value={assignedToId} onValueChange={setAssignedToId}>
                       <SelectTrigger>
-                        <SelectValue placeholder={t('selectUser')} />
+                        <SelectValue placeholder={language === 'fi' ? 'Valitse käyttäjä' : 'Select User'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">{t('unassigned')}</SelectItem>
+                        <SelectItem value="">{language === 'fi' ? 'Ei määritetty' : 'Unassigned'}</SelectItem>
                         {users.map((user) => (
                           <SelectItem key={user.id} value={user.id}>
                             {user.displayName || user.username}
