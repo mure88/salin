@@ -4,7 +4,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Prisma 7 compatible initialization
+// Prisma client with pgBouncer compatibility
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient();
